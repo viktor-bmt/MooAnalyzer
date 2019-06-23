@@ -1,1 +1,4 @@
 *.swp
+lex.yy.c
+*.tab.*
+mooanalyzer
