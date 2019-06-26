@@ -4,6 +4,19 @@
 
 void yyerror(char* s);
 int yylex();
+void stepback();
+void stepforward();
+
+struct allocatedMemory
+{
+  int* m_ptr;
+  int m_size;
+  int m_capacity;
+  int m_pos;
+} typedef allocatedMemory;
+
+allocatedMemory allocMem;
+
 %}
 
 %start line
@@ -23,42 +36,68 @@ int yylex();
 
 %%
 
+line    :   line command        {;}
+        |   command             {;}
 
-line    :   line ENDWHILE      {printf("endwhile\n");}
-        |   line STEPBACK      {printf("step back\n");}
-        |   line STEPFORWARD   {printf("step forward\n");}
-        |   line EXECUTE       {printf("execute\n");}
-        |   line PRINTORREAD   {printf("print or read\n");}
-        |   line DECREMENT     {printf("decrement\n");}
-        |   line INCREMENT     {printf("increment\n");}
-        |   line WHILE         {printf("while\n");}
-        |   line CLEAR         {printf("clear\n");}
-        |   line REGISTER      {printf("register\n");}
-        |   line PRINT         {printf("print\n");}
-        |   line READ          {printf("read\n");}
-        |   ENDWHILE      {printf("endwhile\n");}
-        |   STEPBACK      {printf("step back\n");}
-        |   STEPFORWARD   {printf("step forward\n");}
-        |   EXECUTE       {printf("execute\n");}
-        |   PRINTORREAD   {printf("print or read\n");}
-        |   DECREMENT     {printf("decrement\n");}
-        |   INCREMENT     {printf("increment\n");}
-        |   WHILE         {printf("while\n");}
-        |   CLEAR         {printf("clear\n");}
-        |   REGISTER      {printf("register\n");}
-        |   PRINT         {printf("print\n");}
-        |   READ          {printf("read\n");}
+command :   ENDWHILE      ;
+        |   STEPBACK      {stepback(); printf("Step Back\nCurrent Pointer Pos: %p\n",allocMem.m_ptr+allocMem.m_pos);}
+        |   STEPFORWARD   {stepforward();printf("Step Forward\nCurrent Pointer Pos: %p\n",allocMem.m_ptr+allocMem.m_pos);}
+        |   EXECUTE       ;
+        |   PRINTORREAD   ; 
+        |   DECREMENT     ;
+        |   INCREMENT     ;
+        |   WHILE         ;
+        |   CLEAR         ;
+        |   REGISTER      ;
+        |   PRINT         ;
+        |   READ          ;
  
         ;
 
 %%
 
+void stepback() {
+  if(allocMem.m_pos > 0)
+    --allocMem.m_pos;
+}
+
+void stepforward() {
+  int pos = allocMem.m_pos;
+  int capacity = allocMem.m_capacity;
+  int size = allocMem.m_size;
+  int* ptr = allocMem.m_ptr;
+
+  if(pos < (capacity-1))
+    ++pos;
+  else {
+    capacity *= 2;
+    ptr = realloc(ptr, capacity*sizeof(int));
+    for(int i=size; i<capacity; ++i)
+      *ptr = 0;
+    ++pos;
+  }
+  if(pos == size)
+    ++size;
+
+  allocMem.m_ptr = ptr;
+  allocMem.m_pos = pos;
+  allocMem.m_capacity = capacity;
+}
+
 int main()
 {
-  return yyparse();
+  allocMem.m_size = allocMem.m_capacity = 1;
+  allocMem.m_ptr = (int*)malloc(sizeof(int));
+  allocMem.m_pos = 0;
+
+  printf("Initial Memory Position: %p\n", allocMem.m_ptr);
+
+  int returnCode = yyparse();
+  free(allocMem.m_ptr);
+  return returnCode;
 }
 
 void yyerror(char* s)
 {
-  fprintf(stderr, "%s\n", s);
+  fprintf(stderr, "%s \n", s);
 }
