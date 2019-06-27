@@ -32,12 +32,12 @@ line    :   line command        {;}
         |   command             {;}
 
 command :   ENDWHILE      ;
-        |   STEPBACK      {stepback(&mem); printMemoryPos(&mem);}
-        |   STEPFORWARD   {stepforward(&mem); printMemoryPos(&mem);}
+        |   STEPBACK      {stepback(&mem);    printf("Step Back\n");    printMemoryPos(&mem);}
+        |   STEPFORWARD   {stepforward(&mem); printf("Step forward\n"); printMemoryPos(&mem);}
         |   EXECUTE       ;
         |   PRINTORREAD   ; 
-        |   DECREMENT     ;
-        |   INCREMENT     ;
+        |   DECREMENT     {decrement(&mem); printf("Decrement\n"); printValue(&mem);} 
+        |   INCREMENT     {increment(&mem); printf("Increment\n"); printValue(&mem);}
         |   WHILE         ;
         |   CLEAR         ;
         |   REGISTER      ;
@@ -48,14 +48,13 @@ command :   ENDWHILE      ;
 
 %%
 
-#include "funcs.h"
-#include "allocatedMemory.h"
-
 int main()
 {
   initMem(&mem);
 
   int returnCode = yyparse();
+
+  showAllocatedMemory(&mem);
 
   free(mem.m_ptr);
   return returnCode;

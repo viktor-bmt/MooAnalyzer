@@ -39,6 +39,51 @@ void stepforward(allocatedMemory* pMem) {
   pMem->m_capacity = capacity;
 }
 
-void printMemoryPos(allocatedMemory* pMem) {
-  printf("Current memory position: %p\n", (pMem->m_ptr)+(pMem->m_pos));
+void increment(allocatedMemory* pMem) {
+  int* ptr = pMem->m_ptr;
+  const int pos = pMem->m_pos;
+
+  ++(ptr[pos]);
+}
+
+void decrement(allocatedMemory* pMem) {
+  int* ptr = pMem->m_ptr;
+  const int pos = pMem->m_pos;
+
+  --(ptr[pos]);
+}
+
+void printMemoryPos(const allocatedMemory* pMem) {
+  const int* ptr = pMem->m_ptr;
+  const int pos = pMem->m_pos;
+
+  printf("Current memory position: %p\n", ptr+pos);
+}
+
+void printValue(const allocatedMemory* pMem) {
+  const int* ptr = pMem->m_ptr;
+  const int pos = pMem->m_pos;
+
+  printf("Value in the current cell: %d\n", ptr[pos]);
+}
+
+void showAllocatedMemory(const allocatedMemory* pMem) {
+  printf("\nMemory Allocation Scheme:\n");
+
+  const int size = pMem->m_size;
+  const int pos = pMem->m_pos;
+  const int* ptr = pMem->m_ptr;
+
+  for(int i=0; i<size; ++i)
+    printf("|_%d_|", ptr[i]);
+
+  printf("\n");
+
+  for(int i=0; i<size; ++i)
+    if(ptr[i]<0)
+      printf("  -%d- ", i);
+    else
+      printf(" -%d- ", i);
+
+  printf("\n");
 }

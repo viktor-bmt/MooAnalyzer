@@ -1,6 +1,4 @@
 %{
-#include "funcs.h"
-#include "allocatedMemory.h"
 #include "mooanalyzer.tab.h"
 
 void yyerror(char* s);
