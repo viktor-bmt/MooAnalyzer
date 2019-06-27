@@ -1,21 +1,13 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "funcs.h"
+#include "allocatedMemory.h"
 
 void yyerror(char* s);
 int yylex();
-void stepback();
-void stepforward();
 
-struct allocatedMemory
-{
-  int* m_ptr;
-  int m_size;
-  int m_capacity;
-  int m_pos;
-} typedef allocatedMemory;
-
-allocatedMemory allocMem;
+allocatedMemory mem;
 
 %}
 
@@ -40,8 +32,8 @@ line    :   line command        {;}
         |   command             {;}
 
 command :   ENDWHILE      ;
-        |   STEPBACK      {stepback(); printf("Step Back\nCurrent Pointer Pos: %p\n",allocMem.m_ptr+allocMem.m_pos);}
-        |   STEPFORWARD   {stepforward();printf("Step Forward\nCurrent Pointer Pos: %p\n",allocMem.m_ptr+allocMem.m_pos);}
+        |   STEPBACK      {stepback(&mem); printMemoryPos(&mem);}
+        |   STEPFORWARD   {stepforward(&mem); printMemoryPos(&mem);}
         |   EXECUTE       ;
         |   PRINTORREAD   ; 
         |   DECREMENT     ;
@@ -56,44 +48,16 @@ command :   ENDWHILE      ;
 
 %%
 
-void stepback() {
-  if(allocMem.m_pos > 0)
-    --allocMem.m_pos;
-}
-
-void stepforward() {
-  int pos = allocMem.m_pos;
-  int capacity = allocMem.m_capacity;
-  int size = allocMem.m_size;
-  int* ptr = allocMem.m_ptr;
-
-  if(pos < (capacity-1))
-    ++pos;
-  else {
-    capacity *= 2;
-    ptr = realloc(ptr, capacity*sizeof(int));
-    for(int i=size; i<capacity; ++i)
-      *ptr = 0;
-    ++pos;
-  }
-  if(pos == size)
-    ++size;
-
-  allocMem.m_ptr = ptr;
-  allocMem.m_pos = pos;
-  allocMem.m_capacity = capacity;
-}
+#include "funcs.h"
+#include "allocatedMemory.h"
 
 int main()
 {
-  allocMem.m_size = allocMem.m_capacity = 1;
-  allocMem.m_ptr = (int*)malloc(sizeof(int));
-  allocMem.m_pos = 0;
-
-  printf("Initial Memory Position: %p\n", allocMem.m_ptr);
+  initMem(&mem);
 
   int returnCode = yyparse();
-  free(allocMem.m_ptr);
+
+  free(mem.m_ptr);
   return returnCode;
 }
 
