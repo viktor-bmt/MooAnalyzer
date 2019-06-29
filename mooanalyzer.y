@@ -56,6 +56,7 @@ int main(int argc, char** argv)
     return 1;
   }
 
+  // sets the COW-file given as an argument as stdin for Flex
   yyin = fopen(argv[1], "r");
   if(!yyin) {
     printf("File %s does not exist\n", argv[1]);
