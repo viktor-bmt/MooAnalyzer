@@ -40,10 +40,10 @@ command :   ENDWHILE      ;
         |   DECREMENT     {printf("Decrement\n"); decrement(&mem);} 
         |   INCREMENT     {printf("Increment\n"); increment(&mem);}
         |   WHILE         ;
-        |   CLEAR         ;
+        |   CLEAR         {printf("Clear\n"); clear(&mem);}
         |   REGISTER      ;
         |   PRINT         {printf("Print\n"); printValue(&mem); }
-        |   READ          {printf("Read\n");  readValue(&mem); showAllocatedMemory(&mem);}
+        |   READ          {printf("Read\n");  readValue(&mem);  }
  
         ;
 

@@ -131,3 +131,10 @@ void readValue(allocatedMemory* pMem) {
 
   ptr[pos] = num;
 }
+
+void clear(allocatedMemory* pMem){
+  int* ptr = pMem->m_ptr;
+  const int pos = pMem->m_pos;
+
+  ptr[pos] = 0;
+}

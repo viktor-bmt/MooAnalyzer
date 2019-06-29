@@ -11,6 +11,7 @@ void increment(allocatedMemory* pMem);
 void decrement(allocatedMemory* pMem);
 void printValue(const allocatedMemory* pMem);
 void readValue(allocatedMemory* pMem);
+void clear(allocatedMemory* pMem);
 
 void printMemoryPos(const allocatedMemory* pMem);
 void showAllocatedMemory(const allocatedMemory* pMem);
