@@ -6,6 +6,7 @@
 
 void yyerror(char* s);
 int yylex();
+extern FILE * yyin;
 
 allocatedMemory mem;
 
@@ -32,24 +33,34 @@ line    :   line command        {;}
         |   command             {;}
 
 command :   ENDWHILE      ;
-        |   STEPBACK      {printf("Step Back\n");     stepback(&mem);       showAllocatedMemory(&mem);}
-        |   STEPFORWARD   {printf("Step forward\n");  stepforward(&mem);    showAllocatedMemory(&mem);}
+        |   STEPBACK      {printf("Step Back\n");     stepback(&mem);   }
+        |   STEPFORWARD   {printf("Step forward\n");  stepforward(&mem);}
         |   EXECUTE       ;
         |   PRINTORREAD   ; 
-        |   DECREMENT     {printf("Decrement\n"); decrement(&mem);  printValue(&mem); showAllocatedMemory(&mem);} 
-        |   INCREMENT     {printf("Increment\n"); increment(&mem);  printValue(&mem); showAllocatedMemory(&mem);}
+        |   DECREMENT     {printf("Decrement\n"); decrement(&mem);} 
+        |   INCREMENT     {printf("Increment\n"); increment(&mem);}
         |   WHILE         ;
         |   CLEAR         ;
         |   REGISTER      ;
-        |   PRINT         {printf("Print\n"); printValue(&mem);}
-        |   READ          ;
+        |   PRINT         {printf("Print\n"); printValue(&mem); }
+        |   READ          {printf("Read\n");  readValue(&mem); showAllocatedMemory(&mem);}
  
         ;
 
 %%
 
-int main()
+int main(int argc, char** argv)
 {
+  if(argc != 2) {
+    printf("Wrong number of arguments\nPlease, run the program as follows: ./mooanalyzer [filename]\n");
+    return 1;
+  }
+
+  yyin = fopen(argv[1], "r");
+  if(!yyin) {
+    printf("File %s does not exist\n", argv[1]);
+    return 1;
+  }
   initMem(&mem);
 
   int returnCode = yyparse();

@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
 #include "funcs.h"
 #include "allocatedMemory.h"
 
@@ -86,4 +88,46 @@ void showAllocatedMemory(const allocatedMemory* pMem) {
       printf(" -%d- ", i);
 
   printf("\n");
+}
+
+const int isStringNumber(const char* str) {
+  int flag = 1;
+
+  if(!str)
+    return 0;
+  if(!isdigit(str[0]) & (str[0] != '+') & (str[0] != '-'))
+    return 0;
+  if (((str[0] == '+') | (str[0] == '-')) & (strlen(str) == 1))
+    return 0;
+
+  int i = 1;
+  while(str[i])
+    if(!isdigit(str[i++])) {
+      flag = 0;
+      break;
+    }
+
+  return flag;
+}
+
+void readValue(allocatedMemory* pMem) {
+  int* ptr = pMem->m_ptr;
+  const int pos = pMem->m_pos;
+
+  char* str = NULL;
+
+  printf("Enter a number: ");
+  scanf("%ms", &str);
+
+  while(!isStringNumber(str)) {
+    free(str);
+    str = NULL;
+    printf("The input must contain only digits. Try again: ");
+    scanf("%ms", &str);
+  }
+
+  int num = atoi(str);
+  free(str);
+
+  ptr[pos] = num;
 }
