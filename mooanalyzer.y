@@ -32,16 +32,16 @@ line    :   line command        {;}
         |   command             {;}
 
 command :   ENDWHILE      ;
-        |   STEPBACK      {stepback(&mem);    printf("Step Back\n");    printMemoryPos(&mem);}
-        |   STEPFORWARD   {stepforward(&mem); printf("Step forward\n"); printMemoryPos(&mem);}
+        |   STEPBACK      {printf("Step Back\n");     stepback(&mem);       showAllocatedMemory(&mem);}
+        |   STEPFORWARD   {printf("Step forward\n");  stepforward(&mem);    showAllocatedMemory(&mem);}
         |   EXECUTE       ;
         |   PRINTORREAD   ; 
-        |   DECREMENT     {decrement(&mem); printf("Decrement\n"); printValue(&mem);} 
-        |   INCREMENT     {increment(&mem); printf("Increment\n"); printValue(&mem);}
+        |   DECREMENT     {printf("Decrement\n"); decrement(&mem);  printValue(&mem); showAllocatedMemory(&mem);} 
+        |   INCREMENT     {printf("Increment\n"); increment(&mem);  printValue(&mem); showAllocatedMemory(&mem);}
         |   WHILE         ;
         |   CLEAR         ;
         |   REGISTER      ;
-        |   PRINT         ;
+        |   PRINT         {printf("Print\n"); printValue(&mem);}
         |   READ          ;
  
         ;

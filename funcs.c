@@ -27,7 +27,7 @@ void stepforward(allocatedMemory* pMem) {
     capacity *= 2;
     ptr = realloc(ptr, capacity*sizeof(int));
     for(int i=size; i<capacity; ++i)
-      *ptr = 0;
+      ptr[i] = 0;
     ++pos;
   }
   if(pos == size)
@@ -80,8 +80,8 @@ void showAllocatedMemory(const allocatedMemory* pMem) {
   printf("\n");
 
   for(int i=0; i<size; ++i)
-    if(ptr[i]<0)
-      printf("  -%d- ", i);
+    if(i==pos)
+      printf(" >%d< ", i);
     else
       printf(" -%d- ", i);
 
