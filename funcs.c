@@ -161,6 +161,11 @@ void clear(allocatedMemory* pMem){
   ptr[pos] = 0;
 }
 
+// executes a moo-command corresponding the value in the current cell
+// moo - '0'
+// mOo - '1'
+// ...
+// oom - '11'
 void executeInstruction(allocatedMemory* pMem) {
   int* ptr = pMem->m_ptr;
   const int pos = pMem->m_pos;
@@ -196,9 +201,69 @@ void executeInstruction(allocatedMemory* pMem) {
     case 11:
       readValue(pMem);
       break;
+    // if the value in the current cell is '3' or any other
+    // exits the program
+    // otherwise '3' can cause infinite loop
     default:
       printf("Invalid command for mOO instruction\n");
       free(ptr);
       exit(1);
   }
+}
+
+// prints a char value by ASCII code to the console
+// returns 1 in case the value in the current cell is out-of-char-range
+// function used in printorread() - see below
+int printChar(allocatedMemory* pMem) {
+  const int* ptr = pMem->m_ptr;
+  const int pos = pMem->m_pos;
+
+  if((ptr[pos] >= 0) & (ptr[pos] <= 255)) {
+    printf("%c", (char)ptr[pos]);
+    return 0;
+  }
+  else {
+    printf("Invalid ASCII-code given");
+    return 1;
+  }
+}
+
+// asks user for input until a valid 1-character input is given
+void readChar(allocatedMemory* pMem) {
+  printf("Give a single character: ");
+
+  char ch = getchar();
+  while(getchar() != '\n') {
+    
+    // invalidation of the following given characters until the newline
+    while(getchar() != '\n');
+
+    printf("Incorrect input. Give a single character: ");
+    ch = getchar();
+  }
+
+  int* ptr = pMem->m_ptr;
+  const int pos = pMem->m_pos;
+
+  ptr[pos] = (int)ch;
+}
+
+// if the value in the current cell non-zero, this value is treated as an ASCII
+// code and prints the appropriate character to the console
+//
+// if the value in the current cell zero, asks user to give a character, ASCII
+// code of which will be written to the current cell
+void printorread(allocatedMemory* pMem) {
+  int* ptr = pMem->m_ptr;
+  const int pos = pMem->m_pos;
+
+  if(ptr[pos]) {
+    // in case non-char value is given, exits the program
+    if(printChar(pMem)) {
+      free(ptr);
+      exit(1);
+    }
+  }
+  else
+    readChar(pMem);
 }

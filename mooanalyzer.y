@@ -33,10 +33,10 @@ line    :   line command        {;}
         |   command             {;}
 
 command :   ENDWHILE      ;
-        |   STEPBACK      {printf("Step Back\n");     stepback(&mem);   }
-        |   STEPFORWARD   {printf("Step forward\n");  stepforward(&mem);}
+        |   STEPBACK      {stepback(&mem);}
+        |   STEPFORWARD   {stepforward(&mem);}
         |   EXECUTE       {printf("Execute\n");       executeInstruction(&mem);}
-        |   PRINTORREAD   ; 
+        |   PRINTORREAD   {printorread(&mem);}
         |   DECREMENT     {printf("Decrement\n"); decrement(&mem);} 
         |   INCREMENT     {printf("Increment\n"); increment(&mem);}
         |   WHILE         ;

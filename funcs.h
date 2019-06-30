@@ -13,6 +13,7 @@ void printValue(const allocatedMemory* pMem);
 void readValue(allocatedMemory* pMem);
 void clear(allocatedMemory* pMem);
 void executeInstruction(allocatedMemory* pMem);
+void printorread(allocatedMemory* pMem);
 
 void printMemoryPos(const allocatedMemory* pMem);
 void showAllocatedMemory(const allocatedMemory* pMem);
