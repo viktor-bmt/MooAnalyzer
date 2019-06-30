@@ -160,3 +160,45 @@ void clear(allocatedMemory* pMem){
 
   ptr[pos] = 0;
 }
+
+void executeInstruction(allocatedMemory* pMem) {
+  int* ptr = pMem->m_ptr;
+  const int pos = pMem->m_pos;
+  const int val = ptr[pos];
+
+  switch(val) {
+    case 0:
+      break; // TODO
+    case 1:
+      stepback(pMem);
+      break;
+    case 2:
+      stepforward(pMem);
+      break;
+    case 4:
+      break; //TODO
+    case 5:
+      decrement(pMem);
+      break;
+    case 6:
+      increment(pMem);
+      break;
+    case 7:
+      break; // TODO
+    case 8:
+      clear(pMem);
+      break;
+    case 9:
+      break; // TODO
+    case 10:
+      printValue(pMem);
+      break;
+    case 11:
+      readValue(pMem);
+      break;
+    default:
+      printf("Invalid command for mOO instruction\n");
+      free(ptr);
+      exit(1);
+  }
+}

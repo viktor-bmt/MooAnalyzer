@@ -35,7 +35,7 @@ line    :   line command        {;}
 command :   ENDWHILE      ;
         |   STEPBACK      {printf("Step Back\n");     stepback(&mem);   }
         |   STEPFORWARD   {printf("Step forward\n");  stepforward(&mem);}
-        |   EXECUTE       ;
+        |   EXECUTE       {printf("Execute\n");       executeInstruction(&mem);}
         |   PRINTORREAD   ; 
         |   DECREMENT     {printf("Decrement\n"); decrement(&mem);} 
         |   INCREMENT     {printf("Increment\n"); increment(&mem);}
