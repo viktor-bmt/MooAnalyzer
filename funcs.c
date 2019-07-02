@@ -4,6 +4,7 @@
 #include <string.h>
 #include "funcs.h"
 #include "allocatedMemory.h"
+#include "register.h"
 
 // Initialization of memory structure: 1-element block, initial value is '0'
 void initMem(allocatedMemory* pMem) {
@@ -11,6 +12,11 @@ void initMem(allocatedMemory* pMem) {
   pMem->m_size = pMem->m_capacity = 1;
   (pMem->m_ptr)[0] = 0;
   pMem->m_pos = 0;
+}
+
+// initializes register - flag = 0 that means empty
+void initReg(reg* pReg) {
+  pReg->m_flag = 0;
 }
 
 // selects previous memory cell
@@ -267,3 +273,25 @@ void printorread(allocatedMemory* pMem) {
   else
     readChar(pMem);
 }
+
+void registerOper(allocatedMemory* pMem, reg* pReg) {
+  int flag = pReg->m_flag;
+  int regVal = pReg->m_val;
+
+  int* ptr = pMem->m_ptr;
+  const int pos = pMem->m_pos;
+
+  if(flag) {
+    flag = 0;
+    ptr[pos] = regVal;
+  }
+  else {
+    flag = 1;
+    regVal = ptr[pos];
+  }
+
+  pReg->m_flag = flag;
+  pReg->m_val = regVal;
+}
+
+

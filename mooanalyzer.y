@@ -3,12 +3,14 @@
 #include <stdlib.h>
 #include "funcs.h"
 #include "allocatedMemory.h"
+#include "register.h"
 
 void yyerror(char* s);
 int yylex();
 extern FILE * yyin;
 
 allocatedMemory mem;
+reg             r;
 
 %}
 
@@ -41,7 +43,7 @@ command :   ENDWHILE      ;
         |   INCREMENT     {printf("Increment\n"); increment(&mem);}
         |   WHILE         ;
         |   CLEAR         {printf("Clear\n"); clear(&mem);}
-        |   REGISTER      ;
+        |   REGISTER      {printf("Register\n"); registerOper(&mem, &r);}
         |   PRINT         {printf("Print\n"); printValue(&mem); }
         |   READ          {printf("Read\n");  readValue(&mem);  }
  
@@ -63,6 +65,7 @@ int main(int argc, char** argv)
     return 1;
   }
   initMem(&mem);
+  initReg(&r);
 
   int returnCode = yyparse();
 
